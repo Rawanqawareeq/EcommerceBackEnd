@@ -2,8 +2,11 @@ import 'dotenv/config'
 import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({ 
-        cloud_name: 'dcdpudlri', 
-        api_key: '351629883435271', 
-        api_secret: '<your_api_secret>' // Click 'View Credentials' below to copy your API secret
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret: process.env.API_SECRET
 });
 export default cloudinary;
+
+
+   

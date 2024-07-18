@@ -1,6 +1,5 @@
-import { type } from "express/lib/response.js";
-import mongoose, { Schema } from "mongoose";
-const userSchema = new Schema({
+import mongoose, { model, Schema } from "mongoose";
+const UserSchema = new Schema({
     userName:{
         type:String,
         required:true,
@@ -33,7 +32,7 @@ const userSchema = new Schema({
         type:String,
         enum:['Male','Female']
     },
-    states:{
+    status:{
         type:String,
         default:'Active',
         enum:['Active','NotActive'],
@@ -43,9 +42,14 @@ const userSchema = new Schema({
         default:'User',
         enum:['User','Admin','SuperAdmin']
 
+    },
+    sendcode:{
+        type:String,
+        default:null,
     }
+
 },{
     timestamps:true,
 });
-const UserModel = model('User',userSchema);
+const UserModel = model('User',UserSchema);
 export default UserModel;

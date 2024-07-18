@@ -1,13 +1,12 @@
-import mongoose from "mongoose";
+import 'dotenv/config'
+import mongoose from 'mongoose';
+
 const connectDB = async()=>{
-    mongoose.connect(process.env.DB)
-    .then(()=>{
-        console.log("connectDB")
-    }).catch((err)=>{
-        console.log(`error connect  DB ${err}`);
-    })
-
-    
-
+mongoose.connect(process.env.DB)
+  .then(() => console.log('Connect DB')).catch(
+    (err)=>{
+        console.log(`error to connect db ${err}`)
+    }
+  );
 }
-export default connectDB;
+  export default connectDB;
