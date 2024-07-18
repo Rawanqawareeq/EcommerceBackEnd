@@ -22,6 +22,19 @@ export const create = async(req,res)=>{
     await cart.save();
     return res.status(200).json({massege:"success",cart});
 }
+export const updateQuantity = async(req,res)=>{
+    const{quantity,oparator} = req.body;
+     const inc = oparator =="+"?quantity:-quantity;
+    const cart = await CartModel.findOneAndUpdate({userId:req.user._id,"products.productId":req.params.id},{
+        $inc:{
+           "products.$.quantity":inc,
+        }
+        
+    },{new:true});
+    return res.json({massege:"success",cart});
+
+}
+
 export const deleteproduct = async(req,res)=>{
     const {productId} = req.params.id;
     const cart = await CartModel.findOneAndUpdate({userId:req.user._id},{

@@ -7,6 +7,7 @@ const router = Router();
 router.get('/',auth(endpoint.cart),CartController.getcart);
 router.post('/',auth(endpoint.cart),CartController.create);
 router.put('/clearcart',auth(endpoint.cart),CartController.remove);
+router.put('/updateQuantity/:id',auth(endpoint.cart),CartController.updateQuantity);
 router.put('/:id',auth(endpoint.cart),CartController.deleteproduct);
 
 
