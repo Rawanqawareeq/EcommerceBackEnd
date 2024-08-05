@@ -5,6 +5,8 @@ import AuthRouter from "./modules/auth/auth.router.js";
 import SubCategoryRouter from "./modules/subcategory/subcategory.router.js";
 import ProductRouter from "./modules/product/product.router.js";
 import CatRouter from "./modules/cart/cart.router.js";
+import CouponRouter from "./modules/coupon/coupon.router.js";
+import OrderRouter from "./modules/order/order.router.js";
 const initApp = (app,express)=>{
     connectDB();
     app.use(cors())
@@ -15,7 +17,8 @@ const initApp = (app,express)=>{
     app.use("/subcategories",SubCategoryRouter);
     app.use("/product",ProductRouter);
     app.use('/cart',CatRouter);
-
+    app.use('/coupon',CouponRouter)
+    app.use('/order',OrderRouter)
     app.get('/',(req,res)=>{
         return res.status(200).json({massege:"sucsess"})
     });

@@ -1,0 +1,70 @@
+import { model, Schema, Types } from "mongoose";
+
+const orderSchema = new Schema({
+couponId:{
+    type:Types.ObjectId,
+    ref:'Coupon',
+},
+ userId:{
+    type:Types.ObjectId,
+    ref:'User',
+    required:true,
+ },
+ products:[{
+   productName:{type:String},
+    productId:{
+        type:Types.ObjectId,
+        ref:'Product',
+        required:true,   
+    },
+    quantity:{
+        type:Number,
+        default:1,
+        required:true,
+    },
+    unitPrice:{
+        type:Number,
+        required:true,
+    },
+    finalPrice:{
+        type:Number,
+        required:true,
+    },
+ }],
+ finalPrice:{
+    type:Number,
+    required:true,
+ },
+ address:{
+    type:String,
+    required:true,
+ },
+ PhoneNumber:{
+    type:String,
+    required:true,
+ },
+ paymentType:{
+    type:String,
+    enum:['cash','cart'],
+    default:'cash',
+ },
+ status:{
+    type:String,
+    enum:['pending','cancelled','confirmed','onway','delivered'],
+    default:'pending',
+ },
+ notes:{
+    type:String,
+ },
+ rejectedReason:{
+    type:String,
+ },
+ UpdatedBy:{
+    type:Types.ObjectId,
+    ref:'User',
+    required:true,
+}
+},{timestamps:true});
+
+const OrderModel = model('Order',orderSchema);
+export default OrderModel;
