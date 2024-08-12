@@ -67,6 +67,16 @@ updatedBy:{
     ref:'User',
 }
 
-},{timestamps:true,});
+},
+{timestamps:true,
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
+});
+productshcema.virtual('review',{
+   ref:'Review',
+   localField:'_id',
+   foreignField:'productId'
+})
+
 const ProductModel = model('Product',productshcema);
 export default ProductModel;

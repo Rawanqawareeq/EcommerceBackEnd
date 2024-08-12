@@ -32,3 +32,13 @@ export const create =async(req,res)=>{
    const product = await ProductModel.create(req.body);
    res.status(200).json({massege:'sucess',product});
 }
+export const get = async(req,res)=>{
+   const product = await ProductModel.find({}).populate({
+     path:'review',
+     populate:{
+       path:'userId',
+       select:'userName'
+     },
+   });
+   return res.json({massege:'success',product});
+}

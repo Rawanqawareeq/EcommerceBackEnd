@@ -7,12 +7,14 @@ import ProductRouter from "./modules/product/product.router.js";
 import CatRouter from "./modules/cart/cart.router.js";
 import CouponRouter from "./modules/coupon/coupon.router.js";
 import OrderRouter from "./modules/order/order.router.js";
+import UserRouter from "./modules/user/user.router.js";
 const initApp = (app,express)=>{
     connectDB();
     app.use(cors())
    
     app.use(express.json());
     app.use("/auth",AuthRouter);
+    app.use('/user',UserRouter);
     app.use("/categories",CategoryRouter);
     app.use("/subcategories",SubCategoryRouter);
     app.use("/product",ProductRouter);
