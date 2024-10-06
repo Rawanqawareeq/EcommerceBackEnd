@@ -4,6 +4,7 @@ import CategoryModel from "../../../db/model/category.model.js";
 import SubcategoryModel from "../../../db/model/subcategory.model.js";
 import ProductModel from '../../../db/model/product.model.js'
 import cloudinary from "../../utls/cloudinary.js";
+import { pagination } from '../../utls/pagination.js';
 
 export const create =async(req,res)=>{
   const{name,description,price,categoryId,subcategoryId} = req.body;
@@ -33,12 +34,32 @@ export const create =async(req,res)=>{
    res.status(200).json({massege:'sucess',product});
 }
 export const get = async(req,res)=>{
-   const product = await ProductModel.find({}).populate({
+  return res.json("hi");
+   const {skip,limit} = pagination(req.query.page,req.query.limit);
+   const execQuery = ['limit','page','sort','search','fields'];
+  let queryObj = {...req.query};
+
+   execQuery.map((ele)=>{
+      delete queryObj[ele];
+   })
+   queryObj = JSON.stringify(queryObj);
+   queryObj = queryObj.replace(/gt|gte|lt|lte|eq|in|nin/g,match => `$${match}`);
+   queryObj = JSON.parse(queryObj);
+   const mongoseQuery =  ProductModel.find(queryObj).skip(skip).limit(limit).populate({
      path:'review',
      populate:{
        path:'userId',
        select:'userName'
      },
    });
-   return res.json({massege:'success',product});
+   if(req.query.search){
+      mongoseQuery.find({$or:[
+    {name : {$regex : req.query.search}},
+    {name : {$regex : req.query.search}}
+   ]});
+   }
+   mongoseQuery.select(req.query.fields)
+   const count = await ProductModel.estimatedDocumentCount();
+   const product  = await mongoseQuery.sort(req.query.sort);
+   return res.json({massege:'success',count,product});
 }
