@@ -10,17 +10,16 @@ export const create = async(req,res)=>{
         const newcart = await CartModel.create({
             userId:req.user._id, 
             products :{productId}});
-        return res.status(200).json({massege:"success",cart:newcart});
-
+        return res.status(200).json({message:"success",cart:newcart});
     }
     for(let i=0; i < cart.products.length;i++){
         if(cart.products[i].productId == productId){
-            return res.status(200).json({massege:"product aleady exsits"});
+            return next(new AppError("product aleady exsits",409));
         }
     }
     cart.products.push({productId});
     await cart.save();
-    return res.status(200).json({massege:"success",cart});
+    return res.status(200).json({message:"success",cart});
 }
 export const updateQuantity = async(req,res)=>{
     const{quantity,oparator} = req.body;
@@ -28,13 +27,10 @@ export const updateQuantity = async(req,res)=>{
     const cart = await CartModel.findOneAndUpdate({userId:req.user._id,"products.productId":req.params.id},{
         $inc:{
            "products.$.quantity":inc,
-        }
-        
+        }       
     },{new:true});
-    return res.json({massege:"success",cart});
-
+    return res.json({message:"success",cart});
 }
-
 export const deleteproduct = async(req,res)=>{
     const {productId} = req.params.id;
     const cart = await CartModel.findOneAndUpdate({userId:req.user._id},{
@@ -42,12 +38,12 @@ export const deleteproduct = async(req,res)=>{
             productId,
         }
     },{new:true});
-    return res.json({massege:"success",cart})
+    return res.status(200).json({message:"success",cart})
 }
 export const remove =async(req,res)=>{
 
    const cart = await CartModel.findOneAndUpdate({userId:req.user._id},{
             products:[],
     },{new:true});
-    return res.json({massege:"success",cart});
+    return res.status(200).json({message:"success",cart});
 }

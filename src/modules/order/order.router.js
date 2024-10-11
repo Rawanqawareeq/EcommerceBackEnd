@@ -2,10 +2,10 @@ import { Router } from "express";
 import { auth } from "../../middlewave/auth.js";
 import { endpoint } from "./order.role.js";
 import * as orderController from "./order.controller.js";
-
+import { asyncHandler } from "../../utls/catchError.js";
 const router = Router();
-router.post('/',auth(endpoint.create),orderController.create);
-router.get('/all',auth(endpoint.getall),orderController.getall);
-router.get('/',auth(endpoint.get),orderController.get);
-router.patch('/changeStatus/:orderId',auth(endpoint.changeStatus),orderController.changeStatus);
+router.post('/',auth(endpoint.create),asyncHandler(orderController.create) );
+router.get('/all',auth(endpoint.getall),asyncHandler(orderController.getall));
+router.get('/',auth(endpoint.get),asyncHandler(orderController.get));
+router.patch('/changeStatus/:orderId',auth(endpoint.changeStatus),asyncHandler(orderController.changeStatus));
 export default router;

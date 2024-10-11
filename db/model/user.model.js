@@ -3,8 +3,8 @@ const UserSchema = new Schema({
     userName:{
         type:String,
         required:true,
-        min:4,
-        max:20,
+        minlength:3,
+        maxlength:20,
     },
     email:{
         type:String,

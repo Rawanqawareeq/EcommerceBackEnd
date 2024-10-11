@@ -6,28 +6,24 @@ import UserModel from "../../../db/model/user.model.js";
 
 export const create =async(req,res)=>{
     const cart = await CartModel.findOne({userId:req.user._id});
-    const {couponName} = req.body;
-    
+    const {couponName} = req.body;   
     if(!cart || cart.products.length === 0){
-        return res.status(404).json({massege:"cart is empty"});
+        return next(new AppError("cart is empty",404));
     }
     if(couponName){
         const coupon = await CouponModel.findOne({name:req.body.couponName});
       
         if(!coupon){
-            return res.status(404).json({massege:"coupon not found"});
+            return next(new AppError("coupon not found",404));
         }
         if(coupon.expiredDate < new Date()){
-            return res.status(404).json({massege:"coupon expired"});
+            return next(new AppError("coupon expired",404));
         }
        
         if(coupon.usedBy.includes(req.user._id)){
-            return res.status(404).json({massege:"coupon already used"});
-
-        }   
-   
+            return next(new AppError("coupon already used",404));
+        }     
         req.body.coupon=coupon;
-
     }
 
     req.body.products = cart.products;
@@ -37,10 +33,8 @@ export const create =async(req,res)=>{
     for(let product of req.body.products){
         const checkProduct = await ProductModel.findOne({_id:product.productId,stock:{$gte:product.quantity}});
         if(!checkProduct){
-            return res.status(400).json({massege:"product quantity not avaliable"});
-
+            return next(new AppError("product quantity not avaliable",400));
         }
-
         product = product.toObject();
         product.name = checkProduct.name;
         product.unitPrice = checkProduct.price;
@@ -48,9 +42,7 @@ export const create =async(req,res)=>{
         product.finalPrice = checkProduct.price * product.quantity;
         subtotal += product.finalPrice;
         finalProductList.push(product);
-
     }
-
     const user = await UserModel.findById(req.user._id);
     if(!req.body.address){
         req.body.address = user.address;
@@ -69,7 +61,6 @@ export const create =async(req,res)=>{
         address:req.body.address,
         PhoneNumber:req.body.PhoneNumber,
         UpdatedBy:req.user._id,
-
     });
 
     if(Order){
@@ -77,9 +68,7 @@ export const create =async(req,res)=>{
             await ProductModel.findOneAndUpdate({_id:product.productId},{
                $inc:{stock:-product.quantity} }
             );
-
         }
-
         if(req.body.coupon){
           const i =   await CouponModel.findOneAndUpdate({_id:req.body.coupon._id},{
             $addToSet:{usedBy:req.user._id}
@@ -123,9 +112,9 @@ export const changeStatus = async(req,res)=>{
 
     const order = await OrderModel.findById(orderId);
     if(!order){
-        return res.json({massege:"order not found"});
+        return next(new AppError("order not found",404));
     }
     order.status = req.body.status ;
     order.save();
-    return res.json({massege:"success",order});
+    return res.json({message:"success",order});
 }

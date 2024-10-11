@@ -10,17 +10,16 @@ export const create =async(req,res)=>{
   const{name,description,price,categoryId,subcategoryId} = req.body;
   const checkcategory = await CategoryModel.findById(categoryId);
   if(!checkcategory){
-    res.status(404).json({massege:"category not found"});
+    return next(new AppError("category not found",404));
   }
   const checksubcategory = await SubcategoryModel.findOne({_id:subcategoryId,categoryId});
   if(!checksubcategory){
-   
+    return next(new AppError("category not found",404));
   }
   req.body.name = name.toLowerCase();
   req.body.Slug= slugify(req.body.name);
   const finalPrice =0;
-    req.body.finalPrice =  price-(price * (req.body.discount || 0)/100 );
-   
+    req.body.finalPrice =  price-(price * (req.body.discount || 0)/100 ); 
     const {secure_url,public_id} = await cloudinary.uploader.upload(req.files.mainImage[0].path,{folder:
     `${process.env.APP_NAME}/product/${name}`});
     req.body.mainImage = {secure_url,public_id};
@@ -29,16 +28,13 @@ export const create =async(req,res)=>{
         const{secure_url,public_id}= await cloudinary.uploader.upload(file.path,{folder:`${process.env.APP_NAME}/product/${name}/subImage`});
         req.body.subImage.push({secure_url,public_id});
     }
-    
    const product = await ProductModel.create(req.body);
    res.status(200).json({massege:'sucess',product});
 }
 export const get = async(req,res)=>{
-  return res.json("hi");
    const {skip,limit} = pagination(req.query.page,req.query.limit);
    const execQuery = ['limit','page','sort','search','fields'];
   let queryObj = {...req.query};
-
    execQuery.map((ele)=>{
       delete queryObj[ele];
    })

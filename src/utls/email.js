@@ -1,5 +1,6 @@
 import  nodemailer from "nodemailer";
-export async function sendEmail (to,subject,html){
+import { emailTemplate } from "../middlewave/emailTemplete.js";
+export async function sendEmail (to,subject,userName,token){
     
 const transporter = nodemailer.createTransport({
     service:'gmail',
@@ -12,7 +13,7 @@ const info = await transporter.sendMail({
     from: `Rshope" <process.env.EMAIL>`, 
     to, 
     subject,
-    html,
+    html:emailTemplate(userName,token),
   });
 
   return info;

@@ -2,7 +2,6 @@ import 'dotenv/config';
 import OrderModel from "../../../db/model/order.model.js";
 import reviewModel from "../../../db/model/review.model.js";
 import cloudinary from "../../utls/cloudinary.js";
-
 export const create = async(req,res)=>{
     const{productId} = req.params;
     const {comment,ratting} = req.body;
@@ -12,12 +11,11 @@ export const create = async(req,res)=>{
         "products.productId":productId,
     });
     if(!order){
-        res.json({massege:"con't review thie product"}); 
+        return next(new AppError("can't review thie product",409));
     }
     const checkreview = await reviewModel.findOne({userId:req.user._id,productId:productId});
    if(checkreview){
-    res.json({massege:"user already review"}); 
-
+    return next(new AppError("user already review",409));
    }
    if(req.file){
     const{secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{

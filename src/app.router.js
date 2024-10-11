@@ -27,6 +27,10 @@ const initApp = (app,express)=>{
     app.use('*',(req,res)=>{
         return res.status(404).json({massege:"Page not found"})
     });
+    app.use((err,req,res,next)=>{
+        res.status(err.statusCode).json({message:err.message});
+
+    })
 
 }
 export default initApp;

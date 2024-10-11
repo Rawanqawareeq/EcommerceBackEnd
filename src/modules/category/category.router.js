@@ -4,14 +4,13 @@ import * as CtegoryController from "./category.controller.js";
 import { auth } from "../../middlewave/auth.js";
 import subcategoryRouter from "../subcategory/subcategory.router.js";
 import { endPoint } from "./category.role.js";
+import { asyncHandler } from "../../utls/catchError.js";
 const router = Router({caseSensitive:true});
-router.use('/:id/subcategories',subcategoryRouter);
-router.post('/',auth(endPoint.Create),flieUpload(fileType.image).single('image'),CtegoryController.CreateCategory);
-router.get('/ActiveCategory',CtegoryController.getActive);
-router.get('/',auth(endPoint.getAll),CtegoryController.getAll);
-router.get('/:id',auth(endPoint.getDetails),CtegoryController.getDetails);
-router.patch('/:id',auth(endPoint.update),flieUpload(fileType.image).single('image'),CtegoryController.update);
-router.delete('/:id',auth(endPoint.delete),CtegoryController.deleteCategory);
-
-
+router.use('/:id/subcategories',asyncHandler(subcategoryRouter));
+router.post('/',auth(endPoint.Create),flieUpload(fileType.image).single('image'),asyncHandler(CtegoryController.CreateCategory));
+router.get('/ActiveCategory',asyncHandler(CtegoryController.getActive));
+router.get('/',auth(endPoint.getAll),asyncHandler(CtegoryController.getAll));
+router.get('/:id',auth(endPoint.getDetails),asyncHandler(CtegoryController.getDetails));
+router.patch('/:id',auth(endPoint.update),flieUpload(fileType.image).single('image'),asyncHandler(CtegoryController.update));
+router.delete('/:id',auth(endPoint.delete),asyncHandler(CtegoryController.deleteCategory));
 export default router;
