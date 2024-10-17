@@ -72,6 +72,7 @@ export const create =async(req,res)=>{
           success_url: `https://www.facebook.com`,
           cancel_url: `https://www.youtube.com`,
     });
+    return res.json(session);
     const Order = await OrderModel.create({
         userId:req.user._id,
         products:finalProductList,
