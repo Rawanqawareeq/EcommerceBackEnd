@@ -32,6 +32,11 @@ const UserSchema = new Schema({
         type:String,
         enum:['Male','Female']
     },
+    isDeleted:{
+        type:Boolean,
+        default:false,
+
+    },
     status:{
         type:String,
         default:'Active',

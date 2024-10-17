@@ -3,16 +3,18 @@ import CouponModel from "../../../db/model/coupon.model.js";
 import OrderModel from "../../../db/model/order.model.js";
 import ProductModel from "../../../db/model/product.model.js";
 import UserModel from "../../../db/model/user.model.js";
+import Stripe from 'stripe';
+const stripe = new Stripe('sk_test_51Q9tR0DPF661wwvGjLGgSnRrWpugM7WjYfHAki4aUtwY3OVuwvCa1R07nnjhxihjLi8NRgmCu6TIMhHmTw8ElO8J00nvpFx6c9');
 
 export const create =async(req,res)=>{
     const cart = await CartModel.findOne({userId:req.user._id});
     const {couponName} = req.body;   
     if(!cart || cart.products.length === 0){
-        return next(new AppError("cart is empty",404));
+
+        return  res.status(404).json({message:"cart is empty"});
     }
     if(couponName){
         const coupon = await CouponModel.findOne({name:req.body.couponName});
-      
         if(!coupon){
             return next(new AppError("coupon not found",404));
         }
@@ -35,6 +37,7 @@ export const create =async(req,res)=>{
         if(!checkProduct){
             return next(new AppError("product quantity not avaliable",400));
         }
+
         product = product.toObject();
         product.name = checkProduct.name;
         product.unitPrice = checkProduct.price;
@@ -53,7 +56,22 @@ export const create =async(req,res)=>{
     if(!req.body.PhoneNumber){
         req.body.PhoneNumber = user.phone;
     }
-
+    const session = await stripe.checkout.sessions.create({
+        line_items: [
+            {
+              price_data: {currency: 'USD',
+              unit_amount:(subtotal - (subtotal * ((req.body.coupon?.ammount || 0))/100)),
+               product_data:{
+                   name:user.userName,
+               }
+              },
+              quantity: 1,
+            },
+          ],
+          mode: 'payment',
+          success_url: `https://www.facebook.com`,
+          cancel_url: `https://www.youtube.com`,
+    });
     const Order = await OrderModel.create({
         userId:req.user._id,
         products:finalProductList,
@@ -62,6 +80,7 @@ export const create =async(req,res)=>{
         PhoneNumber:req.body.PhoneNumber,
         UpdatedBy:req.user._id,
     });
+
 
     if(Order){
         for(let product of req.body.products){

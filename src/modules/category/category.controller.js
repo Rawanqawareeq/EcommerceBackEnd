@@ -4,7 +4,6 @@ import cloudinary from "../../utls/cloudinary.js";
 import slugify from 'slugify'
 export const CreateCategory =async(req,res)=>{
      req.body.name = req.body.name.toLowerCase();
-
     if(await CategoryModel.findOne({name:req.body.name})){
         return next(new AppError("category already exists",409));
     }

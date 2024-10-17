@@ -4,7 +4,9 @@ import bcrypt  from 'bcrypt';
 import  jwt from 'jsonwebtoken';
 import { sendEmail } from '../../utls/email.js';
 import { customAlphabet} from 'nanoid';
-export const register = async(req,res)=>{
+
+export const register = async(req,res,next)=>{
+
   const {userName,email,password} = req.body;
   const hashpassword = await  bcrypt.hashSync(password,parseInt(process.env.SALTROUNDS));
   const createuser = await UserModel.create({userName,email,password:hashpassword});
@@ -22,17 +24,16 @@ export const login = async(req,res)=>{
      const{email,password} = req.body;
      const user = await UserModel.findOne({email});
      if(!user){
-      return next(new AppError("Email Not exists",404));
+      return res.status(404).json({message:"Email Not exists"});
      }
      if(!user.confirmEmail){
-      return next(new AppError("Plz confirm email",400));
+      return res.status(400).json({message:"Plz confirm email"});
      }
      const match = await bcrypt.compare(password,user.password);
      if(user.status == "NotActive"){
-      return next(new AppError("your account is blocked",400));
-     }
+      return res.status(400).json({message:"your account is blocked"});     }
      if(!match){
-      return next(new AppError("password is wrong",400));
+      return res.status(400).json({message:"password is wrong"});
      }
      const token = jwt.sign({id:user._id,role:user.role,status:user.status},process.env.LOGINSIG);
      return res.status(200).json({message:"success",token});

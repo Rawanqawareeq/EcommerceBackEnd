@@ -5,12 +5,14 @@ import flieUpload, { fileType } from "../../utls/multer.js";
 import { endpoint } from "./product.role.js";
 import ReviewRouter  from "../review/review.router.js";
 import { asyncHandler } from "../../utls/catchError.js";
+import { validation } from "../../middlewave/validation.js";
+import * as schema  from "./product.validation.js";
 
 const router = Router();
 router.use('/:productId/review',asyncHandler(ReviewRouter));
-router.post('/',auth(endpoint.create),flieUpload(fileType.image).fields([
+router.post('/',flieUpload(fileType.image).fields([
     {name:'mainImage',maxCount:1},
     {name:'subImage',maxCount:5},
-]),productcontroller.create);
+]),validation(schema.createProductSchema),auth(endpoint.create),productcontroller.create);
 router.get('/',auth(endpoint.get),asyncHandler(productcontroller.get));
 export default router;

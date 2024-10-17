@@ -56,6 +56,14 @@ export const get = async(req,res)=>{
    }
    mongoseQuery.select(req.query.fields)
    const count = await ProductModel.estimatedDocumentCount();
-   const product  = await mongoseQuery.sort(req.query.sort);
-   return res.json({massege:'success',count,product});
+  let products  = await mongoseQuery.sort(req.query.sort);
+  products = products.map(product =>{
+    return {
+      ...product.toObject(),
+      mainImage:product.mainImage.secure_url,
+      subImage:product.subImage.map(img =>img.secure_url),
+    }
+  })
+
+   return res.json({massege:'success',count,products});
 }
