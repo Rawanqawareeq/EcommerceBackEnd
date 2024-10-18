@@ -16,7 +16,7 @@ export const create =async(req,res)=>{
     if(couponName){
         const coupon = await CouponModel.findOne({name:req.body.couponName});
         if(!coupon){
-            return next(new AppError("coupon not found",404));
+            res.status(404).json({message:"coupon not found"});
         }
         if(coupon.expiredDate < new Date()){
             return next(new AppError("coupon expired",404));
@@ -35,7 +35,7 @@ export const create =async(req,res)=>{
     for(let product of req.body.products){
         const checkProduct = await ProductModel.findOne({_id:product.productId,stock:{$gte:product.quantity}});
         if(!checkProduct){
-            return next(new AppError("product quantity not avaliable",400));
+            res.status(404).json({message:"product quantity not avaliable"});
         }
 
         product = product.toObject();
@@ -72,7 +72,6 @@ export const create =async(req,res)=>{
           success_url: `https://www.facebook.com`,
           cancel_url: `https://www.youtube.com`,
     });
-    return res.json(session);
     const Order = await OrderModel.create({
         userId:req.user._id,
         products:finalProductList,
@@ -98,7 +97,7 @@ export const create =async(req,res)=>{
 
         await CartModel.updateOne({userId:req.user._id},{products:[]});
     }
-    return res.json({massege:"success",Order});
+    return res.json({massege:"success",Order,session});
 
 
 }
@@ -125,7 +124,7 @@ export const get = async(req,res)=>{
          }
         ]
         });
-    return res.json({order});
+    return res.json({message:"success",order});
 }
 export const changeStatus = async(req,res)=>{
     const{orderId} = req.params;
