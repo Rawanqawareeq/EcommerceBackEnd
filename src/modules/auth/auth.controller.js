@@ -10,13 +10,13 @@ export const register = async(req,res,next)=>{
   const {userName,email,password} = req.body;
   const hashpassword = await  bcrypt.hashSync(password,parseInt(process.env.SALTROUNDS));
   const createuser = await UserModel.create({userName,email,password:hashpassword});
-  const token  = jwt.sign({email},process.env.CONFIRM_EMAILtOKEN);
+  const token  = jwt.sign({email},process.env.CONFIRM_EMAIL_TOKEN);
   await sendEmail(email,`Welcome`,userName,token);
   return res.status(201).json({message:"success",user:createuser});
 }
 export const comfirmEmail = async(req,res)=>{
    const token = req.params.token;
-   const decoded = jwt.verify(token,env.CONFIRM_EMAILtOKEN);
+   const decoded = jwt.verify(token,env.CONFIRM_EMAIL_TOKEN);
    await UserModel.findOneAndUpdate({email:decoded.email},{confirmEmail:true});
    return res.status(200).json({message:"success"});
 }
