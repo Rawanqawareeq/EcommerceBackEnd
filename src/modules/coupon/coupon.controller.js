@@ -2,7 +2,7 @@ import CouponModel from "../../../db/model/coupon.model.js";
 
 export const create = async(req,res)=>{
     if(await CouponModel.findOne({name:req.body.name})){
-        return next(new AppError("name aready exsits",409));
+        return  res.status(709).json({message:"name aready exsits"});
     }
     req.body.expiredDate = new Date(req.body.expiredDate);
     req.body.createdBy = req.user._id;

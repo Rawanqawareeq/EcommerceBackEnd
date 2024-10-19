@@ -7,7 +7,7 @@ export const getCategorySchema =Joi.object({
     id: Joi.string().hex().length(24).required(),
 });
 export const updateCategorySchema =Joi.object({
-    id: Joi.string().hex().length(24),
+    id: Joi.string().hex().length(24).required(),
     name: Joi.string().min(3),
     status:Joi.string().valid('Active','NotActive'),
     image:Joi.object({

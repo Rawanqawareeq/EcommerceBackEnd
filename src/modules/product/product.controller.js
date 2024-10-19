@@ -10,11 +10,11 @@ export const create =async(req,res)=>{
   const{name,description,price,categoryId,subcategoryId} = req.body;
   const checkcategory = await CategoryModel.findById(categoryId);
   if(!checkcategory){
-    return next(new AppError("category not found",404));
+    return res.status(404).json({massege:"category not found"});
   }
   const checksubcategory = await SubcategoryModel.findOne({_id:subcategoryId,categoryId});
   if(!checksubcategory){
-    return next(new AppError("category not found",404));
+    return res.status(404).json({massege:"subCategory not found"});
   }
   req.body.name = name.toLowerCase();
   req.body.Slug= slugify(req.body.name);
@@ -29,7 +29,7 @@ export const create =async(req,res)=>{
         req.body.subImage.push({secure_url,public_id});
     }
    const product = await ProductModel.create(req.body);
-   res.status(200).json({massege:'sucess',product});
+   res.status(200).json({message:'success',product});
 }
 export const get = async(req,res)=>{
    const {skip,limit} = pagination(req.query.page,req.query.limit);
@@ -65,5 +65,5 @@ export const get = async(req,res)=>{
     }
   })
 
-   return res.json({massege:'success',count,products});
+   return res.status(200).json({message:'success',count,products});
 }

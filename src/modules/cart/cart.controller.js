@@ -1,7 +1,7 @@
 import CartModel from "../../../db/model/cart.model.js";
 export const getcart =async (req,res)=>{
     const cart = await CartModel.findOne({userId:req.user._id}).select("products");
-    return res.json({massege:"success",cart});
+    return res.status(200).json({massege:"success",cart});
 }
 export const create = async(req,res)=>{
     const{productId} = req.body;
@@ -14,7 +14,7 @@ export const create = async(req,res)=>{
     }
     for(let i=0; i < cart.products.length;i++){
         if(cart.products[i].productId == productId){
-            return next(new AppError("product aleady exsits",409));
+            return res.status(409).json({massege:"product aleady exsits"});
         }
     }
     cart.products.push({productId});

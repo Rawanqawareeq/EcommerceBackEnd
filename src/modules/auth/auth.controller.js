@@ -4,9 +4,9 @@ import bcrypt  from 'bcrypt';
 import  jwt from 'jsonwebtoken';
 import { sendEmail } from '../../utls/email.js';
 import { customAlphabet} from 'nanoid';
+import xlsx from "xlsx";
 
 export const register = async(req,res,next)=>{
-
   const {userName,email,password} = req.body;
   const hashpassword = await  bcrypt.hashSync(password,parseInt(process.env.SALTROUNDS));
   const createuser = await UserModel.create({userName,email,password:hashpassword});
@@ -19,6 +19,13 @@ export const comfirmEmail = async(req,res)=>{
    const decoded = jwt.verify(token,env.CONFIRM_EMAIL_TOKEN);
    await UserModel.findOneAndUpdate({email:decoded.email},{confirmEmail:true});
    return res.status(200).json({message:"success"});
+}
+export const addUserExcel = async (req,res)=>{
+   const workbook = xlsx.readFile(req.file.path);
+   const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+   const users = xlsx.utils.sheet_to_json(worksheet);
+   await UserModel.insertMany(users);
+   return res.json({message:"success",users});
 }
 export const login = async(req,res)=>{
      const{email,password} = req.body;
@@ -43,7 +50,7 @@ export const SendCode = async(req,res)=>{
    const code = customAlphabet('1234567890abcdef', 4)();
    const user = await UserModel.findOneAndUpdate({email},{sendcode:code},{new:true});
    if(!user){
-      return next(new AppError("Email Not exists",404));
+      return res.status(404).json({message:"Email Not exists"});
    }
    return res.status(200).json({message:"success"});
 }

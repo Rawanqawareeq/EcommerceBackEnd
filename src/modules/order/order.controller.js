@@ -1,16 +1,19 @@
+import 'dotenv/config'
 import CartModel from "../../../db/model/cart.model.js"
 import CouponModel from "../../../db/model/coupon.model.js";
 import OrderModel from "../../../db/model/order.model.js";
 import ProductModel from "../../../db/model/product.model.js";
 import UserModel from "../../../db/model/user.model.js";
 import Stripe from 'stripe';
-const stripe = new Stripe('sk_test_51Q9tR0DPF661wwvGjLGgSnRrWpugM7WjYfHAki4aUtwY3OVuwvCa1R07nnjhxihjLi8NRgmCu6TIMhHmTw8ElO8J00nvpFx6c9');
+import createInvoice from "../../utls/pdf.js";
+
+
+const stripe = new Stripe(process.env.STRIP);
 
 export const create =async(req,res)=>{
     const cart = await CartModel.findOne({userId:req.user._id});
     const {couponName} = req.body;   
     if(!cart || cart.products.length === 0){
-
         return  res.status(404).json({message:"cart is empty"});
     }
     if(couponName){
@@ -19,17 +22,15 @@ export const create =async(req,res)=>{
             res.status(404).json({message:"coupon not found"});
         }
         if(coupon.expiredDate < new Date()){
-            return next(new AppError("coupon expired",404));
+            res.status(404).json({message:"coupon expired"});
         }
        
         if(coupon.usedBy.includes(req.user._id)){
-            return next(new AppError("coupon already used",404));
+            res.status(404).json({message:"coupon already used"});
         }     
         req.body.coupon=coupon;
     }
-
     req.body.products = cart.products;
-
     let finalProductList =[];
     let subtotal = 0;
     for(let product of req.body.products){
@@ -37,9 +38,8 @@ export const create =async(req,res)=>{
         if(!checkProduct){
             res.status(404).json({message:"product quantity not avaliable"});
         }
-
         product = product.toObject();
-        product.name = checkProduct.name;
+        product.productName = checkProduct.name;
         product.unitPrice = checkProduct.price;
         product.discount = checkProduct.discount;
         product.finalPrice = checkProduct.price * product.quantity;
@@ -83,6 +83,20 @@ export const create =async(req,res)=>{
 
 
     if(Order){
+
+const invoice = {
+  shipping: {
+    name: user.userName,
+    address: Order.address,
+    phoneNumber: Order.PhoneNumber,
+  },
+  items: Order.products,
+  subtotal: Order.finalPrice,
+  paid: 0,
+  invoice_nr: Order._id
+};
+
+createInvoice(invoice, "invoice.pdf");
         for(let product of req.body.products){
             await ProductModel.findOneAndUpdate({_id:product.productId},{
                $inc:{stock:-product.quantity} }
@@ -94,10 +108,11 @@ export const create =async(req,res)=>{
           });
 
         }
+        
 
         await CartModel.updateOne({userId:req.user._id},{products:[]});
     }
-    return res.json({massege:"success",Order,session});
+    return res.status(200).json({message:"success",Order,session});
 
 
 }
@@ -106,7 +121,7 @@ export const getall = async(req,res)=>{
        path:'userId',
        select:'userName'
     });
-    return res.json({massege:"success",order});
+    return res.status(200).json({message:"success",order});
 }
 export const get = async(req,res)=>{
     const order = await OrderModel.findOne({userId:req.user._id,
@@ -124,7 +139,7 @@ export const get = async(req,res)=>{
          }
         ]
         });
-    return res.json({message:"success",order});
+    return res.status(200).json({message:"success",order});
 }
 export const changeStatus = async(req,res)=>{
     const{orderId} = req.params;
@@ -135,5 +150,5 @@ export const changeStatus = async(req,res)=>{
     }
     order.status = req.body.status ;
     order.save();
-    return res.json({message:"success",order});
+    return res.status(200).json({message:"success",order});
 }

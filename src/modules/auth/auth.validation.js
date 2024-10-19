@@ -5,6 +5,11 @@ export const registerSchema = Joi.object({
    password:Joi.string().pattern(/^[A-Z][a-z0-9]{3,20}$/).required(),
    confirmPassword:Joi.string().valid(Joi.ref('password')).required(),
 });
+export const loginSchema = Joi.object({
+   email:Joi.string().email().required(),
+   password:Joi.string().pattern(/^[A-Z][a-z0-9]{3,20}$/).required(),
+
+});
 export const sendCodeSchema = Joi.object({
    email:Joi.string().email().required(),
 });

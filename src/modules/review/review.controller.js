@@ -11,11 +11,11 @@ export const create = async(req,res)=>{
         "products.productId":productId,
     });
     if(!order){
-        return next(new AppError("can't review thie product",409));
+        res.status(409).json({message:"can't review thie product"});
     }
     const checkreview = await reviewModel.findOne({userId:req.user._id,productId:productId});
    if(checkreview){
-    return next(new AppError("user already review",409));
+    res.status(409).json({message:"user already review"});
    }
    if(req.file){
     const{secure_url,public_id} = await cloudinary.uploader.upload(req.file.path,{
@@ -24,5 +24,5 @@ export const create = async(req,res)=>{
     req.body.image ={secure_url,public_id};
    }
    const review = await reviewModel.create({comment,productId,ratting,image:req.body.image,userId:req.user._id});
-    res.json({massege:"success",review});
+    res.status(200).json({message:"success",review});
 }
