@@ -4,6 +4,7 @@ import CategoryModel from '../../../db/model/category.model.js';
 import SubcategoryModel from '../../../db/model/subcategory.model.js';
 import cloudinary from '../../utls/cloudinary.js';
 export const create = async(req,res)=>{
+
     const {categoryId} = req.body;
     const category = CategoryModel.findById(categoryId);
    

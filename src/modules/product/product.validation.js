@@ -1,6 +1,7 @@
 import Joi from "joi";
 
 export const createProductSchema = Joi.object({
+  id:Joi.string().hex().length(24),
    name:Joi.string().min(3).required(),
    description:Joi.string().min(5).required(),
    stock:Joi.number().min(0).default(1),

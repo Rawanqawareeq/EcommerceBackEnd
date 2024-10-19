@@ -1,8 +1,9 @@
 import Joi from "joi";
 
 export const createSubCategorySchema = Joi.object({
-    name:Joi.string().required(),
-    image:Joi.array().items({
+    id: Joi.string().hex().length(24),
+    name:Joi.string().min(3).required(),
+    image:Joi.object({
         "fieldname": Joi.string().required(),
         "originalname": Joi.string().required(),
         "encoding": Joi.string().required(),
@@ -11,13 +12,13 @@ export const createSubCategorySchema = Joi.object({
         "filename": Joi.string().required(),
         "path":Joi.string().required(),
         "size":Joi.number().max(500000).required(),
-      }).max(1).required(),
-      slug:Joi.string().required(),
-      status:Joi.string().valid('Active','NotActive').optional(),
+      }).required(),  
       categoryId:Joi.string().hex().length(24).required(),
-      createdBy:Joi.string().hex().length(24).required(),
-      UpdatedBy:Joi.string().hex().length(24).required(),
+      slug:Joi.string().optional(),
+      status:Joi.string().valid('Active','NotActive').optional(),
+      createdBy:Joi.string().hex().length(24),
+      UpdatedBy:Joi.string().hex().length(24),
 })
 export const getSubCategorySchema = Joi.object({
-    id: Joi.string().hex().length(24).required(),
+    id: Joi.string().hex().length(24),
 })

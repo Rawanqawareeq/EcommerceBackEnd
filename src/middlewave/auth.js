@@ -10,20 +10,21 @@ export const auth =(acessRole = [])=>{
     return async(req,res,next)=>{
     const {authorization} = req.headers;
     if(!authorization?.startsWith(process.env.BEARERTOKEN)){
-        return next(new AppError("invalid BEARERtoken",400));
+        res.status(400).json({message:"invalid BEARERtoken"})
     }
     const token = authorization.split(process.env.BEARERTOKEN)[1];
     const decode = jwt.verify(token,process.env.LOGINSIG);
     if(!decode){
-        return next(new AppError("invalid token",400));
+        res.status(400).json({message:"invalid token"})
     }
     const user = await UserModel.findById(decode.id).select("userName role");
     if(!user){
-        return next(new AppError("user Not found",404));
+        res.status(404).json({message:"user Not found"})
+ ;
 
     }
     if(!acessRole.includes(user.role)){
-        return next(new AppError("Not auth user",403));
+        res.status(403).json({message:"Not auth user"});
     }
     req.user = user;
     next();

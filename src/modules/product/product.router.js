@@ -13,6 +13,6 @@ router.use('/:productId/review',asyncHandler(ReviewRouter));
 router.post('/',flieUpload(fileType.image).fields([
     {name:'mainImage',maxCount:1},
     {name:'subImage',maxCount:5},
-]),validation(schema.createProductSchema),auth(endpoint.create),productcontroller.create);
+]),auth(endpoint.create),productcontroller.create);
 router.get('/',auth(endpoint.get),asyncHandler(productcontroller.get));
 export default router;
