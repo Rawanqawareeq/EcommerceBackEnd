@@ -10,7 +10,7 @@ export const updateCategorySchema =Joi.object({
     id: Joi.string().hex().length(24).required(),
     name: Joi.string().min(3),
     status:Joi.string().valid('Active','NotActive'),
-    image:Joi.object({
+    image:Joi.array().items({
       "fieldname": Joi.string().required(),
       "originalname": Joi.string().required(),
       "encoding": Joi.string().required(),
@@ -19,12 +19,12 @@ export const updateCategorySchema =Joi.object({
       "filename": Joi.string().required(),
       "path":Joi.string().required(),
       "size":Joi.number().max(500000).required(),
-    }).optional(),   
+    }).max(1).required(),    
 });
 export const createCategorySchema =Joi.object({
     id: Joi.string().hex().length(24),
     name: Joi.string().min(3).required(),
-    image:Joi.object({
+    image:Joi.array().items({
       "fieldname": Joi.string().required(),
       "originalname": Joi.string().required(),
       "encoding": Joi.string().required(),
@@ -33,5 +33,5 @@ export const createCategorySchema =Joi.object({
       "filename": Joi.string().required(),
       "path":Joi.string().required(),
       "size":Joi.number().max(500000).required(),
-    }).required(),   
+    }).max(1).required(),   
 });

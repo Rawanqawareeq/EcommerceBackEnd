@@ -10,8 +10,7 @@ const router = Router();
 router.get('/',auth(endpoint.cart),asyncHandler(CartController.getcart));
 router.post('/',validation(schema.createCartSchema ),auth(endpoint.cart),asyncHandler(CartController.create));
 router.put('/updateQuantity/:id',validation(schema.updateQuantitySchema),auth(endpoint.cart),asyncHandler(CartController.updateQuantity));
-router.put('/:id',validation(schema.deleteProductSchema),auth(endpoint.cart),validation(schema.deleteProductSchema),asyncHandler(CartController.deleteproduct));
-router.put('/clearcart',auth(endpoint.cart),asyncHandler(CartController.remove));
+router.put('/deleteprodect/:id',validation(schema.deleteProductSchema),auth(endpoint.cart),validation(schema.deleteProductSchema),asyncHandler(CartController.deleteproduct));
 
-
+router.put('/clearcart',auth(endpoint.cart),asyncHandler(CartController.getcart));
 export default router;

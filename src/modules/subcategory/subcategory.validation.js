@@ -3,7 +3,7 @@ import Joi from "joi";
 export const createSubCategorySchema = Joi.object({
     id: Joi.string().hex().length(24),
     name:Joi.string().min(3).required(),
-    image:Joi.object({
+    image:Joi.array().items({
         "fieldname": Joi.string().required(),
         "originalname": Joi.string().required(),
         "encoding": Joi.string().required(),
@@ -12,7 +12,7 @@ export const createSubCategorySchema = Joi.object({
         "filename": Joi.string().required(),
         "path":Joi.string().required(),
         "size":Joi.number().max(500000).required(),
-      }).required(),  
+      }).max(1).required(),   
       categoryId:Joi.string().hex().length(24).required(),
       slug:Joi.string().optional(),
       status:Joi.string().valid('Active','NotActive').optional(),

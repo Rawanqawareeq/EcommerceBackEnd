@@ -28,7 +28,7 @@ export const create = async(req,res)=>{
 }
 export const getAll = async(req,res)=>{
    const {id} = req.params;
-    const category = await CategoryModel.findById(id);
+  const category = await CategoryModel.findById(id);
     if(!category){
         return res.status(404).json({message:"Main category Not found"});
     }

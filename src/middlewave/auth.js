@@ -19,9 +19,7 @@ export const auth =(acessRole = [])=>{
     }
     const user = await UserModel.findById(decode.id).select("userName role");
     if(!user){
-        res.status(404).json({message:"user Not found"})
- ;
-
+        res.status(404).json({message:"user Not found"});
     }
     if(!acessRole.includes(user.role)){
         res.status(403).json({message:"Not auth user"});

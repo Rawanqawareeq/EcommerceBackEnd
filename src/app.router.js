@@ -29,7 +29,6 @@ const initApp = (app,express)=>{
     });
     app.use((err,req,res,next)=>{
         res.status(err.statusCode).json({message:err.message});
-
     })
 
 }

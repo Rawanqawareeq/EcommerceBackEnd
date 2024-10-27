@@ -6,7 +6,7 @@ import { sendEmail } from '../../utls/email.js';
 import { customAlphabet} from 'nanoid';
 import xlsx from "xlsx";
 
-export const register = async(req,res,next)=>{
+export const register = async(req,res)=>{
   const {userName,email,password} = req.body;
   const hashpassword = await  bcrypt.hashSync(password,parseInt(process.env.SALTROUNDS));
   const createuser = await UserModel.create({userName,email,password:hashpassword});
