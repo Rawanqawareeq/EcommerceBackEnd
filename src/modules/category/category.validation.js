@@ -10,7 +10,7 @@ export const updateCategorySchema =Joi.object({
     id: Joi.string().hex().length(24).required(),
     name: Joi.string().min(3),
     status:Joi.string().valid('Active','NotActive'),
-    image:Joi.array().items({
+     image:Joi.array().items({
       "fieldname": Joi.string().required(),
       "originalname": Joi.string().required(),
       "encoding": Joi.string().required(),

@@ -3,7 +3,7 @@ import express from 'express';
 import initApp from './src/app.router.js';
 
 const app = express();
-const PORT =  process.env.PORT || 7000; 
+const PORT =   7000; 
 app.post('/webhooks', express.raw({type: 'application/json'}), (request, response) => {
     let event = request.body;
     if (endpointSecret) {
