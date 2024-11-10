@@ -41,7 +41,6 @@ export const deleteproduct = async(req,res)=>{
     return res.status(200).json({message:"success",cart})
 }
 export const remove =async(req,res)=>{
-  return res.json({message:"ok"});
    const cart = await CartModel.findOneAndUpdate({userId:req.user._id},{
             products:[],
     },{new:true});

@@ -52,6 +52,10 @@ createdBy:{
     type:Types.ObjectId,
     ref:'User',
 },
+dailyBookingLimit: { 
+    type: Number, 
+    default: 10 
+},
 categoryId:{
     type:Types.ObjectId,
     ref:'Category',
