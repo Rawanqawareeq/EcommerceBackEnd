@@ -146,7 +146,7 @@ export const changeStatus = async(req,res)=>{
 
     const order = await OrderModel.findById(orderId);
     if(!order){
-        return next(new AppError("order not found",404));
+        return res.status(404).json({message:"order not found",order});
     }
     order.status = req.body.status ;
     order.save();
