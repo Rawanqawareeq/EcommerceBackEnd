@@ -50,9 +50,6 @@ export const create =async(req,res)=>{
     if(!req.body.address){
         req.body.address = user.address;
     }
-    if(!req.body.address){
-        req.body.address = user.address;
-    }
     if(!req.body.PhoneNumber){
         req.body.PhoneNumber = user.phone;
     }

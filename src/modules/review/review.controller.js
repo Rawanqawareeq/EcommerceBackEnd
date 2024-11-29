@@ -11,7 +11,7 @@ export const create = async(req,res)=>{
         "products.productId":productId,
     });
     if(!order){
-        res.status(409).json({message:"can't review thie product"});
+        res.status(409).json({message:"can't review this product"});
     }
     const checkreview = await reviewModel.findOne({userId:req.user._id,productId:productId});
    if(checkreview){
